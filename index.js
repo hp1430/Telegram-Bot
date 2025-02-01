@@ -15,14 +15,17 @@ const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
 // });
 
 bot.on('message', (option) => {
-        bot.sendMessage(option.chat.id, "Hello, type /hi to get an exclusive shayri...").catch((error) => {
+        bot.sendMessage(option.chat.id, `Hello ${option.from.first_name}, type /hi to get an exclusive shayri...`).catch((error) => {
             console.error("Error sending message:", error); // Handle potential errors
         });
     });
 
 
-bot.onText(/\/hii/, async (option) => {
+bot.onText(/\/hi/, async (option) => {
     const response = await axios.get('http://localhost:3000/shayri');
+    if(!response) {
+        bot.sendMessage(option.chat.id, `Sorry ${option.from.first_name}, currently server is off !!!`);
+    }
     const poems = response.data;
 
     console.log(option);
